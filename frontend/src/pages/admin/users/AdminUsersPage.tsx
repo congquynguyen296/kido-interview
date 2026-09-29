@@ -175,7 +175,7 @@ export const AdminUsersPage = () => {
                   }
                 } 
               },
-              { id: 'div', label: '-' },
+              { id: 'divider', label: '-' },
               { id: 'del', label: 'Delete user', icon: <Trash2 />, danger: true, onClick: () => handleDelete(u) },
             ]}
           />

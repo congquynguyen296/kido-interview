@@ -1,6 +1,7 @@
 import { cn } from '@/utils/cn';
 import { useEffect, useRef, useState } from 'react';
-// import { MoreVertical } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { MoreVertical } from 'lucide-react';
 
 export interface DropdownItem {
   id: string;
@@ -22,10 +23,17 @@ interface DropdownProps {
 export const Dropdown = ({ trigger, items, align = 'right', className }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ top: 0, left: 0, right: 0 });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current && 
+        !dropdownRef.current.contains(event.target as Node) &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -47,23 +55,63 @@ export const Dropdown = ({ trigger, items, align = 'right', className }: Dropdow
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isOpen && dropdownRef.current) {
+        const rect = dropdownRef.current.getBoundingClientRect();
+        setCoords({
+          top: rect.bottom + window.scrollY,
+          left: rect.left + window.scrollX,
+          right: window.innerWidth - rect.right - window.scrollX,
+        });
+      }
+    };
+    
+    if (isOpen) {
+      window.addEventListener('scroll', handleScroll, true); // true for capturing phase to detect scroll in nested containers
+      window.addEventListener('resize', handleScroll);
+    }
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [isOpen]);
+
+  const toggleDropdown = () => {
+    if (!isOpen && dropdownRef.current) {
+      const rect = dropdownRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+        right: window.innerWidth - rect.right - window.scrollX,
+      });
+    }
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
-      {/* <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
+      <div onClick={toggleDropdown} className="cursor-pointer">
         {trigger || (
           <button className="p-1.5 rounded-full hover:bg-gray-100 text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
             <MoreVertical className="w-5 h-5" />
           </button>
         )}
-      </div> */}
+      </div>
 
-      {isOpen && (
+      {isOpen && createPortal(
         <div
+          ref={menuRef}
           className={cn(
             "absolute z-50 mt-2 w-48 rounded-xl bg-white shadow-[0px_4px_24px_0px] shadow-black/15 ring-1 ring-black/5 focus:outline-none py-1 animate-in fade-in zoom-in-95 duration-150",
-            align === 'right' ? "right-0 origin-top-right" : "left-0 origin-top-left",
+            align === 'right' ? "origin-top-right" : "origin-top-left",
             className
           )}
+          style={{
+            top: coords.top,
+            ...(align === 'left' ? { left: coords.left } : { right: coords.right })
+          }}
           role="menu"
           aria-orientation="vertical"
         >
@@ -90,13 +138,18 @@ export const Dropdown = ({ trigger, items, align = 'right', className }: Dropdow
                     }
                   }}
                 >
-                  {item.icon && <span className="mr-3 shrink-0 h-4 w-4">{item.icon}</span>}
+                  {item.icon && (
+                    <span className="mr-2 shrink-0 flex items-center justify-center [&_svg]:w-4 [&_svg]:h-4">
+                      {item.icon}
+                    </span>
+                  )}
                   <span className="truncate">{item.label}</span>
                 </button>
               )}
             </div>
           ))}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

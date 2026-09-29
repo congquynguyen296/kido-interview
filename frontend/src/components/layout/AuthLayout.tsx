@@ -15,12 +15,12 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
           <Logo className="scale-90" />
         </div> */}
         
-        <div className="w-full w-full">
+        <div className="w-full">
           {children}
         </div>
         
         <footer className="mt-8 text-center text-xs text-gray-400">
-          <p>&copy; {currentYear} {import.meta.env.VITE_APP_NAME || 'Auth Service'}. All rights reserved.</p>
+          <p>&copy; {currentYear} {import.meta.env.VITE_APP_NAME || 'MINI AUTH'}. All rights reserved.</p>
         </footer>
       </div>
     </div>

@@ -7,7 +7,7 @@ export const Logo = ({ className, iconOnly = false }: { className?: string; icon
       <img src="/logo_main.svg" alt="Logo" className={cn("h-8 w-auto", iconOnly ? "" : "mr-2")} />
       {!iconOnly && (
         <span className="text-xl font-bold tracking-tight text-gray-900">
-          {import.meta.env.VITE_APP_NAME || 'Auth Service'}
+          {import.meta.env.VITE_APP_NAME || 'MINI AUTH'}
         </span>
       )}
     </div>

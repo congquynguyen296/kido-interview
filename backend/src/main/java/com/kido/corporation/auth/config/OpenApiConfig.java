@@ -16,7 +16,7 @@ public class OpenApiConfig {
         final String securitySchemeName = "BearerAuth";
         return new OpenAPI()
                 .info(new Info()
-                        .title("Auth Service API")
+                        .title("KIDO CORP API")
                         .version("1.0")
                         .description("Authentication and User Management Service"))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
