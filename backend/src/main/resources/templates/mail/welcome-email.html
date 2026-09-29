@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <h2>Welcome to our platform!</h2>
+    <p>Hi <span th:text="${name}">User</span>,</p>
+    <p>An administrator has just created an account for you.</p>
+    <p>Your temporary password is: <strong th:text="${password}">password</strong></p>
+    <p>Please log in and change your password as soon as possible.</p>
+</body>
+</html>

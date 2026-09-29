@@ -1,0 +1,17 @@
+export const ROUTES = {
+  HOME: '/',
+  LOGIN: '/login',
+  REGISTER: '/register',
+  VERIFY_EMAIL: '/verify-email',
+  FORGOT_PASSWORD: '/forgot-password',
+  FORGOT_PASSWORD_VERIFY: '/forgot-password/verify',
+  RESET_PASSWORD: '/reset-password',
+  OAUTH2_CALLBACK: '/oauth2/callback',
+  PROFILE: '/profile',
+  ADMIN_DASHBOARD: '/admin',
+  ADMIN_USERS: '/admin/users',
+  ADMIN_USER_DETAIL: (id: string) => `/admin/users/${id}`,
+  ADMIN_PROFILE: '/admin/profile',
+  FORBIDDEN: '/403',
+  NOT_FOUND: '/404',
+};

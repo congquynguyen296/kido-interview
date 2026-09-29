@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Password Reset Verification Code</title>
+</head>
+<body>
+    <h2>Hello <span th:text="${name}">User</span>,</h2>
+    <p>You requested a password reset. Your verification code is:</p>
+    <h3 th:text="${otp}">000000</h3>
+    <p>This code is valid for <span th:text="${validMinutes}">5</span> minutes. Do not share it with anyone.</p>
+    <p>If you did not request a password reset, please ignore this email.</p>
+</body>
+</html>

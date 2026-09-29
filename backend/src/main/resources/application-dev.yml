@@ -1,0 +1,81 @@
+server:
+  port: ${SERVER_PORT:8080}
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:authdb}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate.ddl-auto: validate
+    show-sql: true
+  data.redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:redis}
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}          # MailHog
+  security.oauth2.client.registration.google:
+    client-id: ${GOOGLE_CLIENT_ID:google-client-id}
+    client-secret: ${GOOGLE_CLIENT_SECRET:google-client-secret}
+    scope: [openid, profile, email]
+    redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:dGhpcy1pcy1hLXZlcnktc2VjdXJlLWRldi1zZWNyZXQta2V5LXdoaWNoLWlzLWF0LWxlYXN0LTY0LWJ5dGVzLWxvbmc=}
+    issuer: ${JWT_ISSUER:auth-service}
+    access-token-ttl: 30s
+    refresh-token-ttl: 7d
+    clock-skew: 30s
+  cookie:
+    refresh-token-name: refresh_token
+    path: /api/v1/auth
+    secure: false
+    same-site: Lax
+    http-only: true
+    domain:                          # để trống ở dev
+  cors:
+    allowed-origins: [http://localhost:5173]
+    allowed-methods: [GET, POST, PUT, PATCH, DELETE, OPTIONS]
+    allowed-headers: ["*"]
+    allow-credentials: true
+    max-age: 1h
+  oauth2:
+    frontend-success-redirect-uri: http://localhost:5173/oauth2/callback
+    frontend-failure-redirect-uri: http://localhost:5173/login?error=oauth2
+  otp:
+    length: 6
+    ttl: 5m
+    max-attempts: 5
+    resend-cooldown: 60s
+    reset-token-ttl: 10m
+    email-verification-ttl: 24h
+  auth:
+    max-failed-login-attempts: 5
+    lock-duration: 15m
+    failed-attempt-window: 15m
+    bcrypt-strength: 10
+    password-min-length: 8
+    require-email-verification: true   # dev = false, prod = true
+    public-endpoints: [/api/v1/auth/**, /oauth2/**, /login/oauth2/**, /swagger-ui/**, /v3/api-docs/**, /actuator/health]
+  admin-bootstrap:
+    enabled: true
+    email: ${ADMIN_EMAIL:admin@example.com}
+    password: ${ADMIN_PASSWORD:Admin@12345}
+    full-name: System Administrator
+  mail:
+    from: no-reply@example.com
+    from-name: Auth Service
+    frontend-reset-password-url: http://localhost:5173/reset-password
+    frontend-verify-email-url: http://localhost:5173/verify-email
+  pagination:
+    default-page-size: 10
+    max-page-size: 100
+  springdoc.enabled: true
